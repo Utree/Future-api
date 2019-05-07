@@ -1,28 +1,29 @@
 from flask import Flask, request
-app = Flask(__name__)
+from flask import jsonify
 
+app = Flask(__name__)
 
 @app.route("/", methods=["GET", "POST"])
 def postNgrokAddress():
     if request.method == "GET":
         if readAddr() == "":
-            return "Fatal: ngrok address is not provided yet."
+            return "Fatal: your address is not provided yet."
         return readAddr()
     elif request.method == "POST":
-        if not request.form["addr"]:
-            return "Fatal: requested field 'addr' is not provided."
-        writeAddr(request.form["addr"])
-        return "Success"
+        if not request.data:
+            return "Fatal: your address is not provided."
+        writeAddr(request.data.decode())
+        return "success"
 
 def writeAddr(addr):
-    with open("./addr", "w") as f:
+    with open("./address.txt", "w") as f:
         f.write(addr)
         return True
 
 def readAddr():
     addr = ""
     try:
-        with open("./addr") as f:
+        with open("./address.txt") as f:
             addr = f.read()
     except:
         return ""
