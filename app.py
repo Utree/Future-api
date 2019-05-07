@@ -18,9 +18,12 @@ def writeAddr(addr):
     with open("./addr", "w") as f:
         f.write(addr)
         return True
-    
+
 def readAddr():
     addr = ""
-    with open("./addr") as f:
-        addr = f.read()
+    try:
+        with open("./addr") as f:
+            addr = f.read()
+    except:
+        return ""
     return addr
