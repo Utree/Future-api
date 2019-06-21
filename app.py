@@ -1,7 +1,11 @@
 from flask import Flask, request
 from flask import jsonify
+from flask_cors import CORS
+import json
+import requests
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route("/", methods=["GET", "POST"])
 def postNgrokAddress():
@@ -12,19 +16,7 @@ def postNgrokAddress():
     elif request.method == "POST":
         if not request.data:
             return "Fatal: your address is not provided."
-        writeAddr(request.data.decode())
+        data = request.data.decode('utf-8')
+        data = json.loads(data)
+        requests.get(data['url'] + '/' + data['path'])
         return "success"
-
-def writeAddr(addr):
-    with open("./address.txt", "w") as f:
-        f.write(addr)
-        return True
-
-def readAddr():
-    addr = ""
-    try:
-        with open("./address.txt") as f:
-            addr = f.read()
-    except:
-        return ""
-    return addr
